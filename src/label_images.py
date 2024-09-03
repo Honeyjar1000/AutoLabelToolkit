@@ -1,6 +1,8 @@
 import cv2
 import os
 import re
+import shutil
+import random
 
 # Initialize global variables
 drawing = False
@@ -11,6 +13,7 @@ confirmed_color = (0, 255, 0)
 image_paths = []  # List to store image paths
 current_index = 0  # To track the current image index
 cx, cy = -1, -1
+data_split = [0.7, 0.2, 0.1]
 
 bbox_list = []
 bbox_class_name_list = []
@@ -42,13 +45,38 @@ def draw_bbox(event, x, y, flags, param):
         # Finalize the current drawing bbox coordinates
         drawing_bbox = (ix, iy, x, y)
 
+def save_image_and_labels(img_path, output_folder, label_file_path):
+    """Saves the image and corresponding labels to the appropriate folder."""
+    # Determine which subset (train/val/test) this image should go to
+    split_choice = random.choices(['train', 'val', 'test'], data_split, k=1)[0]
+
+    # Copy the image to the appropriate subfolder in the 'images' directory
+    img_subfolder = os.path.join(output_folder, 'images', split_choice)
+    if not os.path.exists(img_subfolder):
+        os.makedirs(img_subfolder)
+    shutil.copy(img_path, img_subfolder)
+
+    # Move the label file to the corresponding 'labels' subfolder
+    label_subfolder = os.path.join(output_folder, 'labels', split_choice)
+    if not os.path.exists(label_subfolder):
+        os.makedirs(label_subfolder)
+    
+    # Define the destination path for the label file
+    destination_label_file = os.path.join(label_subfolder, os.path.basename(label_file_path))
+    
+    # If the destination file already exists, remove it
+    if os.path.exists(destination_label_file):
+        os.remove(destination_label_file)
+
+    # Move the label file to the destination
+    shutil.move(label_file_path, destination_label_file)
+
 def label_images(image_folder, output_folder):
     global img, color, bbox_list, bbox_class_name_list, class_color, drawing_bbox, current_index, img_width, img_height, new_width, new_height
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
-    class_name = os.path.basename(image_folder)
     class_index = 0
     color = (255, 0, 0)
     bbox_list = []
@@ -103,21 +131,21 @@ def label_images(image_folder, output_folder):
                 cv2.destroyAllWindows()
                 return
 
-            elif key == 49: # 1
+            elif key == 49:  # 1
                 class_name = class_list[0]
                 if drawing_bbox:
                     bbox_list.append(drawing_bbox)
                     bbox_class_name_list.append(class_name)
                     drawing_bbox = None
                     print("Added ", class_name)
-            elif key == 50: # 2
+            elif key == 50:  # 2
                 class_name = class_list[1]
                 if drawing_bbox:
                     bbox_list.append(drawing_bbox)
                     bbox_class_name_list.append(class_name)
                     drawing_bbox = None
                     print("Added ", class_name)
-            elif key == 51: # 3
+            elif key == 51:  # 3
                 class_name = class_list[2]
                 if drawing_bbox:
                     bbox_list.append(drawing_bbox)
@@ -150,6 +178,8 @@ def label_images(image_folder, output_folder):
                             label_file.write(f"{class_index} {x_center} {y_center} {w} {h}\n")
                     print(f"Saved annotations to {label_file_path}")
 
+                    save_image_and_labels(img_path, output_folder, label_file_path)
+
                 cv2.destroyAllWindows()
                 current_index += 1
                 bbox_list = []
@@ -159,13 +189,15 @@ def label_images(image_folder, output_folder):
         cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    unlabeled_dataset = 'example_animals'
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    unlabeled_folder = os.path.join(base_dir, f'data/unlabeled/{unlabeled_dataset}')
-    labeled_folder = os.path.join(base_dir, f'data/labeled/{unlabeled_dataset}')
+    # Dataset split ratios: train, val, test
+    
+    unlabeled_folder = 'D:/yolo_object_detection/data/unlabeled'
+    labeled_folder = 'D:/yolo_object_detection/data/labeled'
 
-    for class_folder in os.listdir(unlabeled_folder):
-        class_folder_path = os.path.join(unlabeled_folder, class_folder)
-        if os.path.isdir(class_folder_path):
-            output_folder = os.path.join(labeled_folder, class_folder)
-            label_images(class_folder_path, output_folder)
+    # Define the specific folder within unlabeled_folder you want to label
+    image_folder = os.path.join(unlabeled_folder, 'example_dog')
+    
+    # Define the output folder where labeled data will be saved
+    output_folder = os.path.join(labeled_folder, 'example_dog')
+
+    label_images(image_folder, output_folder)
