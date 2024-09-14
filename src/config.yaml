@@ -1,0 +1,23 @@
+unlabeled_folder: "fruit"
+
+split: [0.7, 0.2, 0.1]
+
+classes:
+  - capsicum
+  - garlic
+  - lemon 
+  - lime
+  - pear
+  - potato
+  - pumpkin
+  - tomato
+
+colors:         # BGR
+  - [205, 15, 255]  
+  - [255, 255, 255]  
+  - [0, 255, 255]  
+  - [23, 117, 43]  
+  - [29, 255, 152]  
+  - [34, 72, 94]
+  - [27, 134, 255]
+  - [0, 0, 255]  
