@@ -1,5 +1,7 @@
 unlabeled_folder: "fruit"
 
+model: "steve"
+
 split: [0.7, 0.2, 0.1]
 
 classes:
