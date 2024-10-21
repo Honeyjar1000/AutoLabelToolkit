@@ -2,7 +2,7 @@
 
 Create data in Yolo8 format fast and efficiently using automatic labelling.
 
-Requires Python 3.10 and torch CUDA.
+Requires Python 3.10. To run on GPU install torch CUDA.
 
 <p align="center">
   <img src="pics/start_img.png" alt="alt text">
