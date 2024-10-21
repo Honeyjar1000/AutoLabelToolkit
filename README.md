@@ -2,6 +2,8 @@
 
 Create data in Yolo8 format fast and efficiently using automatic labelling.
 
+Requires Python 3.10 and torch CUDA.
+
 <p align="center">
   <img src="pics/start_img.png" alt="alt text">
 </p>
@@ -156,4 +158,4 @@ Press __esc__ to remove any incorrect bounding boxes and then redraw manually.
 
 And there we have it. Once this dataset has been fully labelled, we can train another model off the larger dataset. 
 
-Thank you :D
+Yay :D
