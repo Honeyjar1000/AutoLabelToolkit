@@ -15,7 +15,7 @@ class ImageLabeler:
         self.drawing_bbox = None
         self.bbox_list, self.bbox_class_name_list = [], []
         self.default_color = (0, 0, 0)  # Black color for unconfirmed bounding boxes
-        self.panel_width, self.display_size = 300, (1000, 1000)
+        self.panel_width, self.display_size = 350, (1000, 1000)
         self.background_color = (208, 253, 255)  # Cream background color
         self.data_ind = 0
         self.is_confirmed = False
@@ -172,11 +172,24 @@ class ImageLabeler:
     def _add_panel(self, img_display):
         """Adds a side panel listing class names, key bindings, and confirmation status."""
         panel = cv2.copyMakeBorder(img_display, 0, 0, 0, self.panel_width, cv2.BORDER_CONSTANT, value=self.background_color)
+
         for idx, class_name in enumerate(self.class_list):
             text = f"{idx + 1 if idx < 10 else 'Shift + ' + str(idx - 9)}: {class_name}"
             cv2.putText(panel, text, (img_display.shape[1] + 10, 30 + idx * 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
+
+
+        keys = ["Enter", "n", "b", "esc", "backspace"]
+        binds = ["confirm", "next", "back", "remove bbs", "remove last bb"]
+        for idx2 in range(len(keys)):
+            text = f"{keys[idx2]}: {binds[idx2]}"
+            cv2.putText(panel, text, (img_display.shape[1] + 10, 30 + (idx+idx2 + 2) * 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
+
         status_text = "Confirmed" if self.is_confirmed else "Unconfirmed"
-        cv2.putText(panel, f"Status: {status_text}", (img_display.shape[1] + 10, 30 + len(self.class_list) * 40 + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
+        status_text = f"Status: {status_text}"
+        
+        cv2.putText(panel, status_text, (img_display.shape[1] + 10, 30 + (len(self.class_list) + len(keys) + 1) * 40 + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
+
+
         return panel
 
     def _handle_keypress(self, key, img_path, scale_x, scale_y, offset_x, offset_y):
