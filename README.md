@@ -133,7 +133,7 @@ python examine_labeled_data.py
   <img src="pics/label_img6.png" alt="alt text">
 </p>
 
-Space bar will cycle through the data. But as expected we have some errors:
+Space bar will cycle through the data. But as expected we have some errors, it has labelled a potato as a pumpkin:
 
 <p align="center">
   <img src="pics/label_img_mistake7.png" alt="alt text">
