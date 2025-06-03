@@ -225,7 +225,7 @@ It will output:
 Now check in the labelled data folder or you can view the newly created dataset with `examine_labeled_data` command.
 
 ## Merge Datasets
-It might be of interest to merge two labelled datasets together. This can also be done with this toolbox, simply specify the two datasets to be labeled in the `config.yaml` folder (`dataset_to_combine_1` and `dataset_to_combine_1`) and also the name of the newly created merged dataset (`dataset_merged_name`).
+It might be of interest to merge two labelled datasets together. This can also be done with this toolbox, simply specify the two datasets to be labeled in the `config.yaml` folder (`dataset_to_combine_1` and `dataset_to_combine_2`) and also the name of the newly created merged dataset (`dataset_merged_name`).
 
 This command must be run from `src/generate_random_data`. simply run:
 ```bash
