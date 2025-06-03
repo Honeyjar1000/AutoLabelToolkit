@@ -1,5 +1,7 @@
-unlabeled_folder: "fruit_large"
+# Unlabeled_folder (also used for labeled folder to examine. TODO make this more intuitive).
+unlabeled_folder: "random_data3"
 
+### For autolabeling
 model: "steve"
 
 split: [0.7, 0.2, 0.1]
@@ -23,3 +25,13 @@ colors:         # BGR
   - [34, 72, 94]
   - [27, 134, 255]
   - [0, 0, 255]  
+
+
+# For generating random data
+name_of_created_dataset: "random_data3"
+repeats_per_object: 1
+
+# For merging data
+dataset_merged_name: "merged_dataset"
+dataset_to_combine_1: "fruit_large"
+dataset_to_combine_2: "random_data"

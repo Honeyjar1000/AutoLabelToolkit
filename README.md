@@ -10,6 +10,24 @@ Requires Python 3.10. To run on GPU install torch CUDA.
 
 A toolkit for labelling data manually and automatically by training models on smaller datasets.
 
+
+## Environment set up
+First open command prompt and cd to whereever you have installed the AutoLabelToolkit
+```bash
+cd your/directory/yolo_object_detection
+```
+Create a new envirnment (call it yolo_env or whatever you want):
+```bash
+python -m venv yolo_env
+```
+Install the packages:
+```bash
+pip install -r requirements.txt
+```
+
+You may need to install CUDA seperately from [here](https://pytorch.org/).
+
+
 ## Create datasets
 
 Lets say we have a dataset of images. First lets create a smaller dataset of that which we will use to train our starting models.
@@ -20,14 +38,14 @@ make sure these datasets are saved into __data/unlabeled__, we will use images o
   <img src="pics/datasets.png" alt="alt text">
 </p>
 
-To manually label fruit_small, make sure the right folder is set in config.yaml
+To manually label fruit_small, make sure the right folder is set in src/config.yaml
 ```
 unlabeled_folder: "fruit_small"
 ```
 
 Also define the classes and associated bbox color.
 
-Now we are all set to manually label:
+Now cd into src `cd src` and we are all set to manually label:
 
 ```bash
 python label_images.py 
@@ -154,8 +172,62 @@ Press __esc__ to remove any incorrect bounding boxes and then redraw manually.
   <img src="pics/label_img_mistakeFix8.png" alt="alt text">
 </p>
 
-## Conclusion
+# Conclusion
 
 And there we have it. Once this dataset has been fully labelled, we can train another model off the larger dataset. 
 
 Yay :D
+
+Bellow is some more functionality offered by this toolkit:
+
+
+## Generate Random Data
+This toolbox also allows us to generate random data using random backgrounds, with images of the object of interest with transparents backgrounds.
+
+Therefore we can generate random data samples.
+
+<p align="center">
+  <img src="pics/random_data_goal.png" alt="alt text">
+</p>
+
+First we put pictures of the objects of interest with transparent background in the folder `src/generate_random_data/objects`. Note that the file name will matter here, as the script will label the images as it goes. E.g. name the photo 'labelName[Number]' as in 'capsicum1'.
+
+Next put a bunch of random images for backgrounds in the folder `src/generate_random_data/fruits`.
+
+In the `Config.yaml` file, specify the `name_of_created_dataset` and `repeats_per_object` which will specify the amount of images that will be created per object / background pair (it will randomly rotate and position the object).
+
+Now cd into `src/generate_random_data` and run:
+```python
+python generate_random_images.py
+```
+It will output:
+```
+92.64% - Processed tomato19.png
+93.07% - Processed tomato2.png
+93.51% - Processed tomato20.png
+93.94% - Processed tomato21.png
+94.37% - Processed tomato22.png
+94.81% - Processed tomato23.png
+95.24% - Processed tomato24.png
+95.67% - Processed tomato25.png
+96.10% - Processed tomato26.png
+96.54% - Processed tomato27.png
+96.97% - Processed tomato28.png
+97.40% - Processed tomato3.png
+97.84% - Processed tomato4.png
+98.27% - Processed tomato5.png
+98.70% - Processed tomato6.png
+99.13% - Processed tomato7.png
+99.57% - Processed tomato8.png
+100.00% - Processed tomato9.png
+```
+
+Now check in the labelled data folder or you can view the newly created dataset with `examine_labeled_data` command.
+
+## Merge Datasets
+It might be of interest to merge two labelled datasets together. This can also be done with this toolbox, simply specify the two datasets to be labeled in the `config.yaml` folder (`dataset_to_combine_1` and `dataset_to_combine_1`) and also the name of the newly created merged dataset (`dataset_merged_name`).
+
+This command must be run from `src/generate_random_data`. simply run:
+```bash
+python merge_datasets.py
+```

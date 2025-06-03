@@ -3,9 +3,13 @@ import shutil
 from tqdm import tqdm
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from arg_parser import parse_args
+import yaml
 
-def combine_datasets(args, dataset1_path, dataset2_path, combined_dataset_path):
+def load_config(config_path):
+    with open(config_path, 'r') as file:
+        return yaml.safe_load(file)
+
+def combine_datasets(config, dataset1_path, dataset2_path, combined_dataset_path):
     # Define paths for images and labels
     subdirs = ['train', 'val', 'test']
     image_dirs = {subdir: os.path.join(combined_dataset_path, subdir, 'images') for subdir in subdirs}
@@ -66,11 +70,11 @@ def combine_datasets(args, dataset1_path, dataset2_path, combined_dataset_path):
                         print(f"Label file does not exist: {src_label_path}")
 
     # Copy files from dataset 1
-    print(f"\nStarting to copy from {args.merge_data_1}...")
+    print(f"\nStarting to copy from {config["dataset_to_combine_1"]}...")
     copy_files(dataset1_path, dataset1_path, combined_dataset_path, combined_dataset_path)
 
     # Copy files from dataset 2 with prefix to avoid name conflicts
-    print(f"\nStarting to copy from {args.merge_data_2}...")
+    print(f"\nStarting to copy from {config["dataset_to_combine_2"]}...")
     copy_files(dataset2_path, dataset2_path, combined_dataset_path, combined_dataset_path, prefix="dataset2_")
 
     # Update the data.yaml file
@@ -85,20 +89,20 @@ def combine_datasets(args, dataset1_path, dataset2_path, combined_dataset_path):
         f.write(f"names: {class_names}\n")  # Update class names based on your dataset
 
 def main():
-    args = parse_args()
+    config = load_config('../config.yaml')
     # Determine the directory of the script
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Paths relative to the script's location
-    dataset1_path = os.path.abspath(os.path.join(script_dir, '..', 'datasets', f'dataset_{args.merge_data_1}'))
-    dataset2_path = os.path.abspath(os.path.join(script_dir, '..', 'datasets', f'dataset_{args.merge_data_2}'))
-    combined_dataset_path = os.path.abspath(os.path.join(script_dir, '..', 'datasets', f'dataset_{args.output_data_id}'))
+    dataset1_path = os.path.abspath(os.path.join(script_dir, '..', '..', 'data', 'labeled', f'{config["dataset_to_combine_1"]}'))
+    dataset2_path = os.path.abspath(os.path.join(script_dir, '..', '..', 'data', 'labeled', f'{config["dataset_to_combine_2"]}'))
+    combined_dataset_path = os.path.abspath(os.path.join(script_dir, '..', '..', 'data', 'labeled', f'{config["dataset_merged_name"]}'))
     
     print(f"Dataset1 Path: {dataset1_path}")
     print(f"Dataset2 Path: {dataset2_path}")
     print(f"Combined Dataset Path: {combined_dataset_path}")
 
-    combine_datasets(args, dataset1_path, dataset2_path, combined_dataset_path)
+    combine_datasets(config, dataset1_path, dataset2_path, combined_dataset_path)
 
 if __name__ == '__main__':
     main()

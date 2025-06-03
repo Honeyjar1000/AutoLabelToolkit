@@ -4,22 +4,27 @@ from PIL import Image
 import shutil
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from arg_parser import parse_args
+import yaml
 
-args = parse_args()
+def load_config(config_path):
+    with open(config_path, 'r') as file:
+        return yaml.safe_load(file)
+
+
+config = load_config('../config.yaml')
 
 # Seed for reproducibility
 random.seed(2)
 
-dataset_id = args.new_dataset_id
+dataset_id = config["name_of_created_dataset"]
 
 # Determine the directory of the script
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Calculate base directory relative to the script location
-base_dir = os.path.abspath(os.path.join(script_dir, '..', '..', 'yolo'))
+base_dir = os.path.abspath(os.path.join(script_dir, '..', '..'))
 
-dataset_dir = os.path.join(base_dir, 'datasets', f'dataset_{dataset_id}')
+dataset_dir = os.path.join(base_dir, 'data', 'labeled', f'{dataset_id}')
 print(f"Dataset directory: {dataset_dir}")
 
 if os.path.exists(dataset_dir):
@@ -33,8 +38,8 @@ for subdir in ['train', 'val', 'test']:
     os.makedirs(os.path.join(dataset_dir, subdir, 'labels'), exist_ok=True)
 
 # Paths to fruit and background images
-fruit_dir = os.path.join(base_dir, 'generate_random_data', 'fruits')
-background_dir = os.path.join(base_dir, 'generate_random_data', 'backgrounds')
+fruit_dir = os.path.join(base_dir, 'src', 'generate_random_data', 'objects')
+background_dir = os.path.join(base_dir, 'src', 'generate_random_data', 'backgrounds')
 
 fruits = [f for f in os.listdir(fruit_dir) if f.endswith('.png')]
 backgrounds = [b for b in os.listdir(background_dir) if b.endswith('.png')]
@@ -44,7 +49,7 @@ scale_range = (0.5, 1.5)
 rotation_range = (-15, 15)
 sets = ['train', 'val', 'test']
 sets_distribution = [0.7, 0.2, 0.1]  # 70% train, 20% val, 10% test
-repeats_per_fruit = args.repeats_per_fruit  # Number of times each fruit image is used
+repeats_per_fruit = config["repeats_per_object"]  # Number of times each fruit image is used
 
 class_names = ['capsicum', 'garlic', 'lemon', 'lime', 'pear', 'potato', 'pumpkin', 'tomato']
 
