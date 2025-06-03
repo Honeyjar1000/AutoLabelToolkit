@@ -202,20 +202,7 @@ python generate_random_images.py
 ```
 It will output:
 ```
-92.64% - Processed tomato19.png
-93.07% - Processed tomato2.png
-93.51% - Processed tomato20.png
-93.94% - Processed tomato21.png
-94.37% - Processed tomato22.png
-94.81% - Processed tomato23.png
-95.24% - Processed tomato24.png
-95.67% - Processed tomato25.png
-96.10% - Processed tomato26.png
-96.54% - Processed tomato27.png
-96.97% - Processed tomato28.png
-97.40% - Processed tomato3.png
-97.84% - Processed tomato4.png
-98.27% - Processed tomato5.png
+...
 98.70% - Processed tomato6.png
 99.13% - Processed tomato7.png
 99.57% - Processed tomato8.png
